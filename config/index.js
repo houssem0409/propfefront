@@ -1,0 +1,1 @@
+export const API = process.env.NEXT_PUBLIC_ANALYTICS_ID || 'http://localhost:8000/api'
