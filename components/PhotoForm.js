@@ -27,10 +27,8 @@ export function PhotoForm({ item, photoChanger, url }) {
     }
     formData.append('title', data?.title)
     formData.append('photo', data?.photo[0])
-    console.log(formData)
     try {
       await axios.post(`http://localhost:8000/api/${url}/photo/add`, formData)
-      console.log(formData)
       getPhotos()
       return data
     } catch (error) {
@@ -43,7 +41,6 @@ export function PhotoForm({ item, photoChanger, url }) {
         `http://localhost:8000/api/${url}/${item?._id}/photos`
       )
       photoChanger(data)
-      console.log(data)
 
       return data
     } catch (error) {
@@ -52,50 +49,60 @@ export function PhotoForm({ item, photoChanger, url }) {
   }
 
   return (
-    <form className='row g-3' onSubmit={handleSubmit(onSubmit)}>
-      {isSubmitSuccessful && (
-        <div className='alert alert-success'>Operation successfully !</div>
-      )}
-      <div className='col-6'>
-        <label htmlFor='inputAddress' className='form-label'>
-          Title
-        </label>
-        <input
-          className='form-control'
-          {...register('title', { required: 'This is required.' })}
-        />
+    <div
+      className='container'
+      style={{
+        width: '100%',
+        height: '100%',
+        borderStyle: 'solid',
+        borderWidth: '2px',
+      }}
+    >
+      <form className='row g-3' onSubmit={handleSubmit(onSubmit)}>
+        {isSubmitSuccessful && (
+          <div className='alert alert-success'>Operation successfully !</div>
+        )}
+        <div className='col-6'>
+          <label htmlFor='inputAddress' className='form-label'>
+            Title
+          </label>
+          <input
+            className='form-control'
+            {...register('title', { required: 'This is required.' })}
+          />
 
-        <ErrorMessage
-          errors={errors}
-          name='title'
-          render={({ message }) => <p>{message}</p>}
-        />
-      </div>
+          <ErrorMessage
+            errors={errors}
+            name='title'
+            render={({ message }) => <p>{message}</p>}
+          />
+        </div>
 
-      <div className='col-9'>
-        <label htmlFor='inputAddress2' className='form-label'>
-          Photo
-        </label>
+        <div className='col-9'>
+          <label htmlFor='inputAddress2' className='form-label'>
+            Photo
+          </label>
 
-        <input
-          {...register('photo')}
-          class='form-control form-control-sm'
-          id='formFileSm'
-          type='file'
-          name='photo'
-          accept='image/*'
-        />
-      </div>
+          <input
+            {...register('photo')}
+            class='form-control form-control-sm'
+            id='formFileSm'
+            type='file'
+            name='photo'
+            accept='image/*'
+          />
+        </div>
 
-      <div className='col-12'>
-        <button
-          disabled={isSubmitting || !isValid}
-          type='submit'
-          className='btn btn-primary'
-        >
-          Add Photo
-        </button>
-      </div>
-    </form>
+        <div className='col-12'>
+          <button
+            disabled={isSubmitting || !isValid}
+            type='submit'
+            className='btn btn-primary'
+          >
+            Add Photo
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }

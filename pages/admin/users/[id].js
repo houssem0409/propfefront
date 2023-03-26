@@ -7,8 +7,6 @@ import axios from 'axios'
 export default function Update() {
   const [user, setUser] = useState()
   const router = useRouter()
-  const { id } = router.query
-  console.log(id)
 
   async function getUser(idUser) {
     try {
@@ -24,6 +22,7 @@ export default function Update() {
     }
   }
   useEffect(() => {
+    const { id } = router.query
     getUser(id)
   }, [])
   console.log(user)

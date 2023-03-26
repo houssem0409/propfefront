@@ -29,7 +29,7 @@ export default function TableEvents({ props, removeEvent }) {
         >
           <Link href='/admin/events/add' className='btn btn-success'>
             <button className='btn btn-successs'>
-              <i className='bi bi-plus-circle'></i>
+              <i className='bi bi-plus-circle' style={{ fontSize: '30px' }}></i>
             </button>
           </Link>
         </div>

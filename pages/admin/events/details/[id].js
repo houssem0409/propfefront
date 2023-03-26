@@ -1,19 +1,12 @@
 import React from 'react'
-import Info from '../../../../components/Info'
-import MyStartup from '../../../../components/MyStartup'
-import MyEventsCreated from '../../../../components/MyEventsCreated'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import Layout from '../../../../components/Layout'
 import AdminLinks from '../../../../components/AdminLinks'
-import CardStartup from '../../../../components/CardStartup'
-import InfoStartup from '../../../../components/InfoStartup'
 import ShowImage from '../../../../components/ShowImage'
-import StartupPhotos from '../../../../components/StartupPhotos'
 import InfoEvent from '../../../../components/Event/InfoEvent'
 import Actors from '../../../../components/Event/Actors'
-import EventPhotos from '../../../../components/Event/EventPhotos'
 import CardEvent from '../../../../components/Event/CardEvent'
 import ShowPhoto from '../../../../components/ShowPhoto'
 export default function Details() {
@@ -38,7 +31,6 @@ export default function Details() {
 
     getEvent(id)
   }, [router])
-  console.log(value)
   return (
     <Layout>
       <div className='row'>
@@ -53,9 +45,9 @@ export default function Details() {
           <div className='col-12' style={{ padding: '30px' }}>
             <div>
               <div>
-                <div class='container'>
-                  <div class='row row-cols-4'>
-                    <div class='col'>
+                <div className='container'>
+                  <div className='row row-cols-4'>
+                    <div className='col'>
                       <button
                         className='btn btn-primary'
                         onClick={(e) => {

@@ -1,0 +1,141 @@
+import axios from 'axios'
+import React, { useState, useEffect } from 'react'
+import queryString from 'query-string'
+import CardUser from '../components/CardUser'
+import TableUsers from './TableUsers'
+const Search = () => {
+  const [data, setData] = useState({
+    categories: [],
+    category: '',
+    search: '',
+    results: [],
+    searched: false,
+  })
+  const { categories, category, search, results, searched } = data
+  const [res, setRes] = useState([])
+  const [listusers, setListUsers] = useState([])
+  async function list(params) {
+    // console.log(name, email , password)
+    const query = queryString.stringify(params)
+    try {
+      const result = await axios.post(
+        `http://localhost:8000/api/user/search?${query}`
+      )
+      setData({ ...data, results: result, searched: true })
+      setRes(result)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  async function getUsers() {
+    try {
+      const { data } = await axios.get('http://localhost:8000/api/users')
+      setListUsers(data)
+
+      return data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  console.log('the list')
+  console.log(listusers)
+  useEffect(() => {
+    getUsers()
+  }, [])
+  const handleChange = (name) => (event) => {
+    //
+    setData({ ...data, [name]: event.target.value, searched: false })
+  }
+  const searchData = () => {
+    //console.log(search , category);
+    if (search) {
+      list({ search: search || undefined, category: category })
+      console.log(results)
+      console.log(res)
+    } else {
+      getUsers()
+    }
+  }
+  const searchSubmit = (e) => {
+    //
+    e.preventDefault()
+    searchData()
+  }
+
+  const searchMessage = () => {
+    if (searched && res?.length > 0) {
+      return `Found ${res?.data?.length} startups`
+    }
+    if (searched && res?.data?.length < 1) {
+      return `No startups Found `
+    }
+  }
+
+  const searchedProducts = (res = []) => {
+    return (
+      <div>
+        <h2 className='mt-4 mb-4'>{searchMessage(searched, res)}</h2>
+        <div className='row'></div>
+        <div className='row'>
+          {console.log(res)}
+
+          <TableUsers props={res?.data} />
+        </div>
+      </div>
+    )
+  }
+
+  const AllUsers = (res) => {
+    return (
+      <div>
+        <h2 className='mt-4 mb-4'>{searchMessage(searched, res)}</h2>
+        <div className='row'></div>
+        <div className='row'>
+          {console.log(res)}
+
+          <TableUsers props={res} />
+        </div>
+      </div>
+    )
+  }
+  const searchForm = () => (
+    <form onSubmit={searchSubmit}>
+      <span className='input-group-text'>
+        <div className='input-group input-group-lg'>
+          <div className='input-group-prepend'>
+            <select className='btn mr-2' onChange={handleChange('category')}>
+              <option value='All'> All </option>
+            </select>
+          </div>
+          <input
+            type='search'
+            className='form-control'
+            onChange={handleChange('search')}
+            placeholder='Search By Name'
+          />
+        </div>
+        <div className='btn input-group-append' style={{ border: 'none' }}>
+          <button className='input-group-text'>Search</button>
+        </div>
+      </span>
+    </form>
+  )
+  return (
+    <div className='row'>
+      <div className='container mb-3'>{searchForm()}</div>
+      {console.log(res)}
+      {searched ? (
+        <div>
+          <div className='container-fluid mb-3'>
+            {searchedProducts(results)}
+          </div>
+
+          {searchMessage()}
+        </div>
+      ) : (
+        <div className='container-fluid mb-3'>{AllUsers(listusers)}</div>
+      )}
+    </div>
+  )
+}
+export default Search

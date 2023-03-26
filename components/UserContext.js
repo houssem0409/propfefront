@@ -6,6 +6,7 @@ import moment from 'moment'
 export const UserContext = React.createContext()
 
 const Auth = ({ children }) => {
+  const [mystartupManage, setMyStartupManage] = useState()
   const [user, setUser] = useState()
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -13,7 +14,7 @@ const Auth = ({ children }) => {
   const { push, pathname } = useRouter()
   const [interva, setInterva] = useState()
   const route = useRouter()
-
+  const [isAdmin, setIsAdmin] = useState()
   const setGlobalToken = () => {
     axios.defaults.headers.common = {
       Authorization: `Bearer  ${token}`,
@@ -27,12 +28,21 @@ const Auth = ({ children }) => {
     delete localStorage['jwt']
     setLoading(true)
     setUser()
+    setMyStartupManage()
     setToken()
     //setGlobalToken(refresh)
     route.push('/user/signin')
     setLoading(false)
     await axios.get(`http://localhost:8000/api/signout`)
     clearInterval(interva)
+  }
+  const getMyStartupInfo = async (id) => {
+    try {
+      const st = await axios.get(`http://localhost:8000/api/startup/${id}`)
+      setMyStartupManage(st)
+    } catch (error) {
+      console.error(error)
+    }
   }
   const getUserInfo = async (token) => {
     try {
@@ -41,8 +51,10 @@ const Auth = ({ children }) => {
           Authorization: token,
         },
       })
-      console.log(res)
       setUser(res)
+      if (res?.data?.startup) {
+        getMyStartupInfo(res?.data?.startup)
+      }
       setIsAuthenticated(true)
     } catch (error) {
       console.error(error)
@@ -55,12 +67,10 @@ const Auth = ({ children }) => {
     setToken(data?.token)
     setGlobalToken(data?.token)
     localStorage['jwt'] = JSON.stringify(data)
-    console.log(data?.refresh)
     return data
   }
   const setRefreshLoop = (token) => {
     let expiresToken = token
-    console.log(expiresToken)
     interva = setInterval(() => {
       refreshToken(expiresToken)
         .then((refresh) => {
@@ -77,12 +87,9 @@ const Auth = ({ children }) => {
         // console.log(tokens.includes('refresh'))
         if (tokens?.length) {
           const parseTokens = JSON.parse(tokens)
-          console.log(parseTokens)
           try {
             const data = await refreshToken(parseTokens?.refresh)
             var current = new Date()
-            console.log(current.toLocaleTimeString())
-            console.log(data?.expireIn)
             const b = true
             if (!b) {
               logout()
@@ -92,7 +99,6 @@ const Auth = ({ children }) => {
             } else {
               setGlobalToken(data?.token)
               setToken(data?.token)
-              console.log(data?.refresh)
               setRefreshLoop(data?.refresh)
               setIsAuthenticated(true)
               await getUserInfo(data?.token)
@@ -105,7 +111,6 @@ const Auth = ({ children }) => {
             setLoading(false)
           }
         } else {
-          console.log('eni lehi nbadel')
           if (pathname == '/') push('/user/signin')
         }
         setLoading(false)
@@ -124,6 +129,13 @@ const Auth = ({ children }) => {
 
     setLoading(true)
     setUser(data)
+    if (data?.token) {
+      getUserInfo(data?.token)
+    }
+    console.log(data?.startup)
+    if (data?.startup !== undefined) {
+      getMyStartupInfo(data?.startup)
+    }
     setLoading(false)
     setIsAuthenticated(true)
     setRefreshLoop(data?.refresh)
@@ -133,12 +145,18 @@ const Auth = ({ children }) => {
     <UserContext.Provider
       value={{
         user,
+        refreshToken,
+        setUser,
         token,
         login,
         isAuthenticated,
         loading,
         logout,
+        isAdmin,
         getUserInfo,
+        getMyStartupInfo,
+        mystartupManage,
+        setMyStartupManage,
       }}
     >
       {!loading ? children : <div>Loading...</div>}

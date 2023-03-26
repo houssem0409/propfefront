@@ -4,6 +4,8 @@ import MyStartup from '../../../../components/MyStartup'
 import MyEventsCreated from '../../../../components/MyEventsCreated'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import AdminMap from '../../../../components/adminmap'
+
 import { useRouter } from 'next/router'
 import Layout from '../../../../components/Layout'
 import AdminLinks from '../../../../components/AdminLinks'
@@ -12,6 +14,7 @@ import InfoStartup from '../../../../components/InfoStartup'
 import ShowImage from '../../../../components/ShowImage'
 import StartupPhotos from '../../../../components/StartupPhotos'
 import ShowPhoto from '../../../../components/ShowPhoto'
+import StartupReviews from '../../../../components/StartupReviews'
 export default function Details() {
   const [value, setValue] = useState('Info')
   const [actualStartup, setActualStartup] = useState()
@@ -60,7 +63,7 @@ export default function Details() {
                           setValue('Info')
                         }}
                       >
-                        Info
+                        Startup Info
                       </button>
                     </div>
                     <div className='col'>
@@ -70,7 +73,7 @@ export default function Details() {
                           setValue('MyStartup')
                         }}
                       >
-                        Startup
+                        Startup Reviews
                       </button>
                     </div>
                     <div className='col'>
@@ -80,7 +83,7 @@ export default function Details() {
                           setValue('MyEventsCreated')
                         }}
                       >
-                        Events Created
+                        Map Location
                       </button>
                     </div>
                     <div className='col'>
@@ -98,10 +101,10 @@ export default function Details() {
               </div>
             </div>
             <div>
-              <div className='col-12'>
+              <div className='container' style={{ marginTop: '20px' }}>
                 {value == 'Info' && <InfoStartup props={actualStartup} />}
-                {value == 'MyStartup' && <MyStartup />}
-                {value == 'MyEventsCreated' && <MyEventsCreated />}
+                {value == 'MyStartup' && <StartupReviews props={id} />}
+                {value == 'MyEventsCreated' && <AdminMap />}
                 {value == 'StartupPhotos' && (
                   <ShowPhoto item={actualStartup} url='startup' />
                 )}

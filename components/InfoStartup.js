@@ -1,6 +1,7 @@
 import React from 'react'
 
 export default function InfoStartup({ props }) {
+  console.log(props)
   return (
     <div
       className='col-12'

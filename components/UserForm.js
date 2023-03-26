@@ -35,13 +35,30 @@ export function UserForm({ props, url }) {
       } catch (error) {
         console.error(error)
       }
-    } else {
+    } else if (props && !url) {
       await sleep(2000)
       console.log(data)
+      console.log('i am  here !')
+      try {
+        await axios.put(
+          `http://localhost:8000/api/user/update/${props?._id}`,
+          data
+        )
+
+        return data
+      } catch (error) {
+        console.error(error)
+      }
+    } else if (url) {
+      await sleep(2000)
+      console.log(data)
+      console.log(user?.id)
+      console.log(user?.data?._id)
+      console.log('je q*suis la ')
       try {
         await axios.put(
           `http://localhost:8000/api/user/update/${
-            user?.id ? user?.id : user?.data?.id
+            user?.id ? user?.id : user?.data?._id
           }`,
           data
         )
@@ -49,6 +66,7 @@ export function UserForm({ props, url }) {
         console.log(token)
         refreshToken(refreshToken)
         getUserInfo(token)
+        setUser(data)
         console.log(data)
 
         return data
@@ -57,6 +75,7 @@ export function UserForm({ props, url }) {
       }
     }
   }
+  console.log(user)
   const setSelectedRole = async () => {
     let role = props?.role ? props?.role : props?.data?.role
     if (role == 'admin') {
@@ -79,163 +98,180 @@ export function UserForm({ props, url }) {
     setSelectedRole()
   }, [setSelectedRole])
 
+  console.log(props)
   console.log(errors)
   console.log(props)
   console.log(isAdmin)
+  console.log(user?.data?._id)
+  console.log(user?.id)
   return (
-    <form className='row g-3' onSubmit={handleSubmit(onSubmit)}>
-      {isSubmitSuccessful && (
-        <div className='alert alert-success'>user added successfully !</div>
-      )}
-      <div className='col-6'>
-        <label htmlFor='inputAddress' className='form-label'>
-          User Name
-        </label>
-        <input
-          className='form-control'
-          placeholder={
-            props?.username ? props?.username : props?.data?.username
-          }
-          {...register('username', { required: 'This is required.' })}
-        />
-
-        <ErrorMessage
-          errors={errors}
-          name='username'
-          render={({ message }) => <p>{message}</p>}
-        />
-      </div>
-      <div className='col-md-6'>
-        <label htmlFor='inputEmail4' className='form-label'>
-          Email
-        </label>
-        <input
-          placeholder={props?.email}
-          {...register('email', {
-            required: 'the email is required and should contain 5 chars',
-            minLength: 5,
-          })}
-          type='email'
-          className='form-control'
-          id='inputEmail4'
-        />
-        <ErrorMessage
-          style={{ color: 'red' }}
-          id='validationServer04Feedback'
-          className='invalid-feedback'
-          errors={errors}
-          name='email'
-          render={({ message }) => <p>{message}</p>}
-        />
-      </div>
-      <div className='col-md-6'>
-        <label htmlFor='inputPassword4' className='form-label'>
-          Password
-        </label>
-        <input
-          {...register('password', {
-            required: 'the password is required and should contain 5 char',
-            maxLength: 8,
-          })}
-          type='password'
-          className='form-control'
-          id='inputPassword4'
-        />
-        <ErrorMessage
-          errors={errors}
-          name='password'
-          render={({ message }) => <p>{message}</p>}
-        />
-      </div>
-      {url == 'profile' ? (
-        <div></div>
-      ) : (
+    <div
+      className='container'
+      style={{
+        borderStyle: 'solid',
+        borderWidth: '2px',
+        with: '100%',
+        height: '100%',
+      }}
+    >
+      <form className='row g-3' onSubmit={handleSubmit(onSubmit)}>
+        {isSubmitSuccessful && (
+          <div className='alert alert-success'>user added successfully !</div>
+        )}
         <div className='col-6'>
-          <label htmlFor='inputPassword4' className='form-label'>
-            Role
+          <label htmlFor='inputAddress' className='form-label'>
+            User Name
           </label>
-          <select
-            defaultValue={props?.role}
-            className='form-select'
-            aria-label='Default select example'
-            {...register('role')}
-          >
-            {isAdmin ? (
-              <option selected='selected' value='admin'>
-                admin
-              </option>
-            ) : (
-              <option value='admin'>admin</option>
-            )}
+          <input
+            className='form-control'
+            placeholder={
+              props?.username ? props?.username : props?.data?.username
+            }
+            {...register('username', { required: 'This is required.' })}
+          />
 
-            <option selected={isDirector} value='director'>
-              director
-            </option>
-            <option selected={isMember} value='member'>
-              member
-            </option>
-            <option selected={isUser} value='user'>
-              user
-            </option>
+          <ErrorMessage
+            errors={errors}
+            name='username'
+            render={({ message }) => <p>{message}</p>}
+          />
+        </div>
+        <div className='col-md-6'>
+          <label htmlFor='inputEmail4' className='form-label'>
+            Email
+          </label>
+          <input
+            placeholder={props?.email}
+            {...register('email', {
+              required: 'the email is required and should contain 5 chars',
+              minLength: 5,
+            })}
+            type='email'
+            className='form-control'
+            id='inputEmail4'
+          />
+          <ErrorMessage
+            style={{ color: 'red' }}
+            id='validationServer04Feedback'
+            className='invalid-feedback'
+            errors={errors}
+            name='email'
+            render={({ message }) => <p>{message}</p>}
+          />
+        </div>
+        <div className='col-md-6'>
+          <label htmlFor='inputPassword4' className='form-label'>
+            Password
+          </label>
+          <input
+            {...register('password', {
+              required: 'the password is required and should contain 5 char',
+              maxLength: 8,
+            })}
+            type='password'
+            className='form-control'
+            id='inputPassword4'
+          />
+          <ErrorMessage
+            errors={errors}
+            name='password'
+            render={({ message }) => <p>{message}</p>}
+          />
+        </div>
+        {url == 'profile' ? (
+          <div></div>
+        ) : (
+          <div className='col-6'>
+            <label htmlFor='inputPassword4' className='form-label'>
+              Role
+            </label>
+            <select
+              defaultValue={props?.role}
+              className='form-select'
+              aria-label='Default select example'
+              {...register('role')}
+            >
+              {isAdmin ? (
+                <option selected='selected' value='admin'>
+                  admin
+                </option>
+              ) : (
+                <option value='admin'>admin</option>
+              )}
+
+              <option selected={isDirector} value='director'>
+                director
+              </option>
+              <option selected={isMember} value='member'>
+                member
+              </option>
+              <option selected={isUser} value='user'>
+                user
+              </option>
+            </select>
+          </div>
+        )}
+
+        <div className='col-12'>
+          <label htmlFor='inputAddress2' className='form-label'>
+            Address 2
+          </label>
+          <input
+            type='text'
+            className='form-control'
+            id='inputAddress2'
+            placeholder='Apartment, studio, or floor'
+          />
+        </div>
+        <div className='col-md-6'>
+          <label htmlFor='inputCity' className='form-label'>
+            City
+          </label>
+          <input type='text' className='form-control' id='inputCity' />
+        </div>
+        <div className='col-md-4'>
+          <label htmlFor='inputState' className='form-label'>
+            State
+          </label>
+          <select id='inputState' className='form-select'>
+            <option selected>Choose...</option>
+            <option>...</option>
           </select>
         </div>
-      )}
-
-      <div className='col-12'>
-        <label htmlFor='inputAddress2' className='form-label'>
-          Address 2
-        </label>
-        <input
-          type='text'
-          className='form-control'
-          id='inputAddress2'
-          placeholder='Apartment, studio, or floor'
-        />
-      </div>
-      <div className='col-md-6'>
-        <label htmlFor='inputCity' className='form-label'>
-          City
-        </label>
-        <input type='text' className='form-control' id='inputCity' />
-      </div>
-      <div className='col-md-4'>
-        <label htmlFor='inputState' className='form-label'>
-          State
-        </label>
-        <select id='inputState' className='form-select'>
-          <option selected>Choose...</option>
-          <option>...</option>
-        </select>
-      </div>
-      <div className='col-md-2'>
-        <label htmlFor='inputZip' className='form-label'>
-          Zip
-        </label>
-        <input type='text' className='form-control' id='inputZip' />
-      </div>
-      <div className='col-12'>
-        <div className='form-check'>
-          <input className='form-check-input' type='checkbox' id='gridCheck' />
-          <label className='form-check-label' htmlFor='gridCheck'>
-            Check me out
+        <div className='col-md-2'>
+          <label htmlFor='inputZip' className='form-label'>
+            Zip
           </label>
+          <input type='text' className='form-control' id='inputZip' />
         </div>
-      </div>
-      <div className='col-12'>
-        {props ? (
-          <button type='submit' className='btn btn-primary'>
-            Update User
-          </button>
-        ) : (
-          <button
-            disabled={isSubmitting || !isValid}
-            type='submit'
-            className='btn btn-primary'
-          >
-            Add User
-          </button>
-        )}
-      </div>
-    </form>
+        <div className='col-12'>
+          <div className='form-check'>
+            <input
+              className='form-check-input'
+              type='checkbox'
+              id='gridCheck'
+            />
+            <label className='form-check-label' htmlFor='gridCheck'>
+              Check me out
+            </label>
+          </div>
+        </div>
+        <div className='col-12'>
+          {props ? (
+            <button type='submit' className='btn btn-primary'>
+              Update User
+            </button>
+          ) : (
+            <button
+              disabled={isSubmitting || !isValid}
+              type='submit'
+              className='btn btn-primary'
+            >
+              Add User
+            </button>
+          )}
+        </div>
+      </form>
+    </div>
   )
 }

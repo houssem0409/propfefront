@@ -3,7 +3,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import { UserContext } from './UserContext'
 import { useContext } from 'react'
 import Popup from 'reactjs-popup'
-import { PhotoForm } from './PhotoEventForm'
 import { UserForm } from './UserForm'
 import 'reactjs-popup/dist/index.css'
 
@@ -11,11 +10,7 @@ export default function ProfileInfo({ props }) {
   const { user, setTokens, tokens, getUserInfo, setUser, token } =
     useContext(UserContext)
 
-  const UpdateProfile = () => {
-    getUserInfo(token)
-  }
   useEffect(() => {}, [])
-  console.log(user)
   return (
     <div>
       <div className='accordion' id='accordionExample'>
@@ -36,11 +31,9 @@ export default function ProfileInfo({ props }) {
                       <i className='bi bi-person-circle'></i>
                     </div>
                     <div className='col-9'>
-                      {user?.data?.username
-                        ? user?.data?.username
-                        : user?.username}
+                      {user?.data?.username}
                       <br />
-                      {user?.data?.email ? user?.data?.email : user?.email}
+                      {user?.data?.email}
                     </div>
                   </div>
                 </button>
@@ -98,7 +91,7 @@ export default function ProfileInfo({ props }) {
               aria-expanded='false'
               aria-controls='collapseThree'
             >
-              Accordion Item #3
+              {user?.address}
             </button>
           </h2>
         </div>

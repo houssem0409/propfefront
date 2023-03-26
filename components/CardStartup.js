@@ -9,12 +9,6 @@ export default function CardStartup({ props }) {
           Address : {props?.address}
         </h6>
         <p className='card-text'>Email : {props?.email}</p>
-        <a href='#' className='card-link'>
-          Card link
-        </a>
-        <a href='#' className='card-link'>
-          Another link
-        </a>
       </div>
     </div>
   )

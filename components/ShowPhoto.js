@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import Popup from 'reactjs-popup'
 import 'reactjs-popup/dist/index.css'
-import { StartupForm } from './StartupForm'
 import { PhotoForm } from './PhotoForm'
 import axios from 'axios'
 
@@ -14,7 +13,6 @@ export default function ShowPhoto({ item, url }) {
         `http://localhost:8000/api/${url}/${item?._id}/photos`
       )
       setPhotos(data)
-      console.log(data)
 
       return data
     } catch (error) {
@@ -28,7 +26,7 @@ export default function ShowPhoto({ item, url }) {
   return (
     <div
       className='col-12'
-      style={{ backgroundColor: 'burlywood', height: '100%', width: '100%' }}
+      style={{ backgroundColor: '#e8e8e8', height: '100%', width: '100%' }}
     >
       <Popup
         trigger={
@@ -43,7 +41,7 @@ export default function ShowPhoto({ item, url }) {
           style={{
             backgroundColor: 'white',
             height: '300px',
-            position: 'absolute',
+            position: 'relative',
           }}
         >
           <PhotoForm url={url} photoChanger={setPhotos} item={item} />
@@ -53,7 +51,6 @@ export default function ShowPhoto({ item, url }) {
       <div className='row'>
         {photos?.map((p, i) => (
           <div className='col-4 mb-3'>
-            {console.log(photos)}
             <img
               src={`http://localhost:8000/api/photo/${url}/${p?._id}`}
               alt={photos?.title}
@@ -61,6 +58,7 @@ export default function ShowPhoto({ item, url }) {
               style={{
                 maxHeight: '80%',
                 maxWidth: '80%',
+                margin: '10px',
               }}
             />
           </div>

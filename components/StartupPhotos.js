@@ -10,14 +10,12 @@ export default function StartupPhotos({ props }) {
         `http://localhost:8000/api/startup/${props?._id}/photos`
       )
       setPhotos(data)
-      console.log(data)
 
       return data
     } catch (error) {
       console.error(error)
     }
   }
-  console.log(photos)
   useEffect(() => {
     getPhotos()
   })

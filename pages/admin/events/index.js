@@ -7,9 +7,12 @@ import axios from 'axios'
 export default function index() {
   const [events, setEvents] = useState()
   const [error, setError] = useState()
-  async function getEvents() {
+  const [limit, setLimit] = useState(10)
+  async function getEvents(limit) {
     try {
-      const { data } = await axios.get('http://localhost:8000/api/events')
+      const { data } = await axios.get(
+        `http://localhost:8000/api/events/limit/${limit}`
+      )
       setEvents(data)
       console.log(data)
 
@@ -18,9 +21,12 @@ export default function index() {
       console.error(error)
     }
   }
+  const loadmore = () => {
+    setLimit(limit + 10)
+  }
   useEffect(() => {
-    getEvents()
-  }, [])
+    getEvents(limit)
+  }, [limit])
   const removeEvent = async (id) => {
     try {
       const eventRemoved = await axios.delete(
@@ -42,7 +48,17 @@ export default function index() {
           <AdminLinks />
         </div>
         <div className='col-9'>
+          <h5 style={{ fontSize: '25px', marginLeft: '30%' }}> List Events</h5>
           <TableEvents props={events} removeEvent={removeEvent} />
+          <button
+            style={{ borderRadius: '15px', marginLeft: '35px' }}
+            className='btn btn-primary'
+            onClick={() => {
+              loadmore()
+            }}
+          >
+            load more
+          </button>
         </div>
       </div>
       <div style={{ margin: '20px', padding: '10px' }}></div>

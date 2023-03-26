@@ -1,11 +1,9 @@
-import axios from 'axios'
 import '../styles/bootstrap.min.css'
-import Layout from '../components/Layout'
 import React, { useState, useMemo, useEffect, useContext } from 'react'
-import { UserContext } from '../components/UserContext'
-import { isAuthenticated } from './api/auth'
 import Auth from '../components/UserContext'
-import { useRouter } from 'next/router'
+import '../styles/Home.module.css'
+import '../styles/styles.css'
+
 function MyApp({ Component, pageProps }) {
   return (
     <Auth>

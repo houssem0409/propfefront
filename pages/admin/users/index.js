@@ -45,6 +45,7 @@ export default function index() {
           <AdminLinks />
         </div>
         <div className='col-9' style={{ padding: '30px' }}>
+          <h5 style={{ fontSize: '25px', marginLeft: '30%' }}> List Users</h5>
           <TableUsers props={users} removeUser={removeUser} />
         </div>
       </div>

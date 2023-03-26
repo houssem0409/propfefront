@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import queryString from 'query-string'
 import CardEvent from './Event/CardEvent'
 
-const SearchEvent = () => {
+const SearchEvent = ({ props }) => {
   const [data, setData] = useState({
     categories: [],
     category: '',
@@ -17,23 +17,21 @@ const SearchEvent = () => {
   async function list(params) {
     // console.log(name, email , password)
     const query = queryString.stringify(params)
-    console.log(query)
     try {
       const result = await axios.post(
         `http://localhost:8000/api/events/search?${query}`
       )
       setData({ ...data, results: result, searched: true })
       setRes(result)
-      console.log(result)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
   async function getEvents() {
     try {
       const data = await axios.get('http://localhost:8000/api/events')
       setStartups(data)
-      console.log(data)
+      console.error(data)
 
       return data
     } catch (error) {
@@ -52,8 +50,6 @@ const SearchEvent = () => {
     //console.log(search , category);
     if (search) {
       list({ search: search || undefined, category: category })
-      console.log(results)
-      console.log(res)
     } else {
       getEvents()
     }
@@ -80,9 +76,10 @@ const SearchEvent = () => {
         <div className='row'></div>
         <div className='row'>
           {res?.data?.map((event, i) => (
-            <div className='col-3'>
+            <div key={i} className='col-3'>
               <CardEvent key={i} props={event} />
               <img
+                key={i}
                 src={`http://localhost:8000/api/event/photo/${event?._id}`}
                 className='mb-3'
                 style={{
@@ -90,7 +87,7 @@ const SearchEvent = () => {
                   maxWidth: '100%',
                 }}
               />
-              <p>Description :{event?.description}</p>
+              <p key={i}>Description :{event?.description}</p>
             </div>
           ))}
         </div>
@@ -105,7 +102,7 @@ const SearchEvent = () => {
         <div className='row'></div>
         <div className='row'>
           {res?.data?.map((event, i) => (
-            <div className='col-3'>
+            <div key={i} className='col-3'>
               <CardEvent key={i} props={event} />
               <img
                 src={`http://localhost:8000/api/event/photo/${event?._id}`}
@@ -149,6 +146,8 @@ const SearchEvent = () => {
       <div className='container mb-3'>{searchForm()}</div>
       {searched ? (
         <div className='container-fluid mb-3'>{searchedEvents(results)}</div>
+      ) : props ? (
+        <div className='container-fluid mb-3'>{AllEvents(props)}</div>
       ) : (
         <div className='container-fluid mb-3'>{AllEvents(startups)}</div>
       )}

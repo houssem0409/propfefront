@@ -1,10 +1,9 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-import CardStartup from './CardStartup'
 import queryString from 'query-string'
 import Startup from './Startup'
 
-const Search = () => {
+const Search = ({ props }) => {
   const [data, setData] = useState({
     categories: [],
     category: '',
@@ -18,23 +17,20 @@ const Search = () => {
   async function list(params) {
     // console.log(name, email , password)
     const query = queryString.stringify(params)
-    console.log(query)
     try {
       const result = await axios.post(
         `http://localhost:8000/api/startups/search?${query}`
       )
       setData({ ...data, results: result, searched: true })
       setRes(result)
-      console.log(result)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
   async function getStartups() {
     try {
       const data = await axios.get('http://localhost:8000/api/startups')
       setStartups(data)
-      console.log(data)
 
       return data
     } catch (error) {
@@ -46,7 +42,7 @@ const Search = () => {
       const { data } = await axios.get('http://localhost:8000/api/categories')
       setData({ ...data, categories: data })
     } catch (error) {
-      console.log(data?.error)
+      console.error(error)
     }
   }
   useEffect(() => {
@@ -61,8 +57,6 @@ const Search = () => {
     //console.log(search , category);
     if (search) {
       list({ search: search || undefined, category: category })
-      console.log(results)
-      console.log(res)
     } else {
       getStartups()
     }
@@ -74,10 +68,10 @@ const Search = () => {
   }
 
   const searchMessage = () => {
-    if (searched && results?.length > 0) {
-      return `Found ${results?.length} startups`
+    if (searched && res?.length > 0) {
+      return `Found ${res?.data?.length} startups`
     }
-    if (searched && results?.length < 1) {
+    if (searched && res?.data?.length < 1) {
       return `No startups Found `
     }
   }
@@ -140,7 +134,15 @@ const Search = () => {
     <div className='row'>
       <div className='container mb-3'>{searchForm()}</div>
       {searched ? (
-        <div className='container-fluid mb-3'>{searchedProducts(results)}</div>
+        <div>
+          <div className='container-fluid mb-3'>
+            {searchedProducts(results)}
+          </div>
+
+          {searchMessage()}
+        </div>
+      ) : props ? (
+        <div className='container-fluid mb-3'> {searchedProducts(props)}</div>
       ) : (
         <div className='container-fluid mb-3'>{AllStartups(startups)}</div>
       )}

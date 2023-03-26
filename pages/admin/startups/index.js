@@ -6,9 +6,13 @@ import axios from 'axios'
 export default function index() {
   const [startups, setStartups] = useState()
   const [error, setError] = useState()
-  async function getStartups() {
+  const [limit, setLimit] = useState(10)
+  async function getStartups(limit) {
     try {
-      const { data } = await axios.get('http://localhost:8000/api/startups')
+      const { data } = await axios.get(
+        `http://localhost:8000/api/startups/${limit}`
+      )
+
       setStartups(data)
       console.log(data)
 
@@ -17,9 +21,12 @@ export default function index() {
       console.error(error)
     }
   }
+  const loadmore = () => {
+    setLimit(limit + 10)
+  }
   useEffect(() => {
-    getStartups()
-  }, [])
+    getStartups(limit)
+  }, [limit])
 
   const removeStartup = async (id) => {
     try {
@@ -42,7 +49,20 @@ export default function index() {
           <AdminLinks />
         </div>
         <div className='col-9'>
+          <h5 style={{ fontSize: '25px', marginLeft: '30%' }}>
+            {' '}
+            List Startups
+          </h5>
           <TableStartups props={startups} removeStartup={removeStartup} />
+          <button
+            style={{ borderRadius: '15px', marginLeft: '35px' }}
+            className='btn btn-primary'
+            onClick={() => {
+              loadmore()
+            }}
+          >
+            load more
+          </button>
         </div>
       </div>
       <div style={{ margin: '20px', padding: '10px' }}></div>

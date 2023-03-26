@@ -1,18 +1,20 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Layout from '../../components/Layout'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { UserContext } from '../../components/UserContext'
-export default function signin() {
+function signin() {
   const { user, token, login, isAuthenticated, loading, logout, getUserInfo } =
     useContext(UserContext)
   const [values, setValues] = useState({
-    username: 'houssem',
-    password: '123456789',
+    username: '',
+    password: '',
     error: '',
     loading: false,
     redirectToReferrer: false,
   })
+  const [errorMessage, setErroMessage] = useState()
+  const [erro, setErro] = useState()
   const router = useRouter()
 
   const { username, password, error } = values
@@ -25,13 +27,34 @@ export default function signin() {
   const clickSubmit = async (e) => {
     e.preventDefault()
     setValues({ ...values, success: 'LoggedIn' })
-    console.log('hhhhh')
-    login(username, password)
+    try {
+      const res = await login(username, password)
+    } catch (err) {
+      setErro(true)
+      setErroMessage(err?.response?.data?.message)
+    }
   }
 
   const signInForm = () => (
-    <div>
+    <div
+      className='container'
+      style={{
+        marginTop: '30px',
+        width: '40%',
+        height: '60%',
+        borderWidth: '1px',
+        borderColor: 'black',
+        borderStyle: 'solid',
+      }}
+    >
       <form>
+        <h3 style={{ marginLeft: '180px' }}>Signin Here </h3>
+        <div style={{ width: '20%', height: '30%' }}>
+          <img
+            src='../../images/logos/collaboration.jpg'
+            style={{ width: '100%', height: '100%', marginLeft: '180px' }}
+          ></img>
+        </div>
         <div className='form-group'>
           <label className='text-muted'> UserName </label>
           <input
@@ -39,6 +62,7 @@ export default function signin() {
             type='text'
             className='form-control'
             value={username}
+            style={{ borderRadius: '30px' }}
           ></input>
         </div>
         <div className='form-group'>
@@ -48,25 +72,35 @@ export default function signin() {
             type='password'
             className='form-control'
             value={password}
+            style={{ borderRadius: '30px' }}
           ></input>
         </div>
-        <button onClick={clickSubmit} className='btn btn-primary'>
+        <button
+          onClick={clickSubmit}
+          className='btn btn-primary'
+          style={{ marginTop: '20px', width: '100%', borderRadius: '30px' }}
+        >
           Submit
         </button>
       </form>
-      <div>
-        <Link href='/user/signup'>
-          <a> You Don't have an account yet ! Register Now</a>
-        </Link>
+      <div className='row' style={{ marginTop: '20px' }}>
+        <div className='col-6'>
+          <Link href='/user/forgottenpassword'>
+            <a> You Forget your Password ?</a>
+          </Link>
+        </div>
+        <div className='col-6'>
+          <Link href='/user/signup'>
+            <a style={{ marginLeft: '70px' }}> Register Now here! </a>
+          </Link>
+        </div>
       </div>
     </div>
   )
+
   const showError = () => (
-    <div
-      className='alert alert-danger'
-      style={{ display: error ? '' : 'none' }}
-    >
-      {error}
+    <div className='alert alert-danger' style={{ display: erro ? '' : 'none' }}>
+      {errorMessage}
     </div>
   )
 
@@ -76,6 +110,9 @@ export default function signin() {
         <h2>Loading ...</h2>
       </div>
     )
+  useEffect(() => {
+    user && router.push('/home')
+  }, [])
 
   return (
     <Layout
@@ -89,3 +126,4 @@ export default function signin() {
     </Layout>
   )
 }
+export default signin

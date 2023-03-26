@@ -116,7 +116,8 @@ const WeeklyOverview = () => {
             45%
           </Typography>
           <Typography variant='body2'>
-            Your sales performance is 45% 😎 better compared to last month
+            the users registrations performance is 45% 😎 better compared to
+            last month
           </Typography>
         </Box>
         <Button fullWidth variant='contained'>

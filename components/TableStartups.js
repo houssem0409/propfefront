@@ -29,7 +29,7 @@ export default function TableStartups({ props, removeStartup }) {
         >
           <Link href='/admin/startups/add' className='btn btn-success'>
             <button className='btn btn-successs'>
-              <i className='bi bi-plus-circle'></i>
+              <i className='bi bi-plus-circle' style={{ fontSize: '30px' }}></i>
             </button>
           </Link>
         </div>
@@ -73,12 +73,13 @@ export default function TableStartups({ props, removeStartup }) {
               </td>
               <td>
                 <button
-                  className='btn btn-success'
+                  style={{ borderRadius: '20px' }}
+                  className='btn btn-info'
                   onClick={() =>
                     router.push(`/admin/startups/details/${row?._id}`)
                   }
                 >
-                  Details
+                  <i class='bi bi-eye' style={{ fontSize: '20px' }}></i>
                 </button>
               </td>
             </tr>
